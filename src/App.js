@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useRef } from "react";
+import { DxReportDesigner } from "devexpress-reporting/dx-reportdesigner";
+import * as ko from "knockout";
+
+const ReportDesigner = () => {
+  const reportUrl = ko.observable("DevextremeReport");
+  const designerRef = useRef();
+  const requestOptions = {
+    host: "https://localhost:54114/",
+    getDesignerModelAction: "DXXRD/GetDesignerModel",
+  };
+  useEffect(() => {
+    const designer = new DxReportDesigner(designerRef.current, {
+      reportUrl,
+      requestOptions,
+    });
+    designer.render();
+    return () => designer.dispose();
+  });
+  return <div ref={designerRef}></div>;
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ width: "100%", height: "1000px" }}>
+      <ReportDesigner />
     </div>
   );
 }
